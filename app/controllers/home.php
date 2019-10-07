@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controllers;
-
 use App\Foundation\Controller;
 use App\Models\Customer;
 use App\Database\Database;
@@ -16,6 +15,16 @@ class Home extends Controller
     public function __construct()
     {
         $this->database = new Database;
+    }
+    public function getOrdersByDate(){
+        // retrieving data from specific period
+        //to do: retrieve start and end date from view
+        //to do: update query to use start and end dates
+        //to do: update view to show query result
+    // $groupBySelectedDates = $this->database->raw(
+    //     "SELECT DAY(purchaseDate) DAY FROM orders WHERE orders.purchaseDate BETWEEN '2019-08-01' AND '2019-09-01' GROUP BY DAY(purchaseDate)
+    //     "
+    // );
     }
     /**
      * @return void
@@ -37,14 +46,12 @@ class Home extends Controller
             "SELECT * FROM orders
             WHERE orders.purchaseDate LIKE '%2019-08%'"
         );
-        $groupByDay = $this->database->raw(
-            "SELECT DAY(purchaseDate) DAY
-            FROM orders
-            WHERE orders.purchaseDate LIKE '%2019-08%'
-            GROUP BY DAY(purchaseDate)"
+       
+        $groupByCurrentDate = $this->database->raw(
+            " SELECT DAY(purchaseDate) DAY FROM orders WHERE orders.purchaseDate LIKE curDate() GROUP BY DAY(purchaseDate)"
         );
+       
     
-        var_dump($groupByDay);
        
         $this->view(
             'home/index',
@@ -52,7 +59,7 @@ class Home extends Controller
                 'totalOrderItems'=> $orderItems[0]['total'] ?? 0,
                 'totalCustomers' => count($customers) ?? 0,
                 'totalOrders' => count($orders) ?? 0,
-                'totalOrderByDay' => count($groupByDay) ?? 0
+                'totalOrderByDay' => count($groupByCurrentDate) ?? 0
             ]
         );    
 

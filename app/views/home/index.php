@@ -8,30 +8,13 @@
         revenues sorted by month</p> 
         </div>
   </div>
-  <div class="select-option">
-  <label>Sort by month</label>
-  <select id="selectValue" onchange="DisplayByDay();">
-  <script type="text/javascript">
-    function DisplayByDay() {
-    var select = document.getElementById("selectValue");
-    var selectedValue = selectValue.options[<?php echo $data['totalOrderByDay'] ?>].value;
-    console.log(selectedValue);
-   }
-  </script>
-  <option value="august">August</option>
-  <option value="1 august ">1 August</option>
-  <option value="2 august ">2 August</option>
-  <option value="3 august ">3 August</option>
-  <option value="4 august ">4 August</option>  
-  <option value="5 august ">5 August</option>
-</select>
-</div>
+
   <div class="wrapper">
           <h3 class="title">Overview</h3>
           <div class="categories">
             <div class="category">
               <span>Orders</span>
-              <?php echo "<span>".$data['totalOrders']."</span>" ?>
+             <?php echo "<span>".$data['totalOrders']."</span>" ?>
             </div>
             <div class="category">
               <span>Revenues</span>
@@ -40,7 +23,19 @@
             <div class="category">
               <span>Customers</span>
               <?php echo "<span>".$data['totalCustomers']."</span>" ?>
-              <?php echo ($data['totalOrderByDay']) ?>
+              </div>
+              <div class="category">
+              <span>Order by Date</span>
+              <?php echo "<span>" .$data['totalOrderByDay']. "</span>"?>
+          </div>
+          <div class="category">
+          <span>Orders by Dates</span>
+          <form action="/form/process/" method="post">
+          <input type="text" class= "selected-dates" name="datetimes" />
+
+          <input type="submit">
+</form>
+
           </div>
         </div>
       </div>
@@ -48,6 +43,33 @@
       <br>
       <div class="chart">
       <script type="text/javascript">
+
+
+      $(function() {
+  $('input[name="datetimes"]').daterangepicker({
+    "startDate": "08/01/2019",
+    "endDate": "08/31/2019",
+      "minDate": "08/01/2019",
+    "maxDate": "08/31/2019",
+    "opens": "center"
+  },
+    function(start, end, label) {
+var startDate = start.format('YYYY-MM-DD');
+var endDate = end.format('YYYY-MM-DD')
+
+        $.ajax({
+            type: "POST",
+            url: 'http://localhost/mvc/app/controllers/Home.php?action=getOrdersByDate',
+            data: {startDate:startDate,endDate:endDate},
+            success: function(response) {
+              console.log(success);
+               }
+           });     
+
+     
+  });
+});
+
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
