@@ -29,7 +29,7 @@ class Home extends Controller
         );
 
         $customers = $this->database->raw(
-            "SELECT * FROM customer
+            "SELECT  DISTINCT customer.customerId FROM customer
               JOIN orders on orders.customerId = customer.customerId
               WHERE orders.purchaseDate LIKE '%2019-08%'"
         );
