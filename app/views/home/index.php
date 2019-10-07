@@ -10,11 +10,20 @@
   </div>
   <div class="select-option">
   <label>Sort by month</label>
-  <select>
-  <option value="september">September</option>
+  <select id="selectValue" onchange="DisplayByDay();">
+  <script type="text/javascript">
+    function DisplayByDay() {
+    var select = document.getElementById("selectValue");
+    var selectedValue = selectValue.options[<?php echo $data['totalOrderByDay'] ?>].value;
+    console.log(selectedValue);
+   }
+  </script>
   <option value="august">August</option>
-  <option value="july">July</option>
-  <option value="june">June</option>
+  <option value="1 august ">1 August</option>
+  <option value="2 august ">2 August</option>
+  <option value="3 august ">3 August</option>
+  <option value="4 august ">4 August</option>  
+  <option value="5 august ">5 August</option>
 </select>
 </div>
   <div class="wrapper">
@@ -22,41 +31,50 @@
           <div class="categories">
             <div class="category">
               <span>Orders</span>
-              <?php 
-              $db = mysqli_connect('localhost','root','','boozt');
-              $sql = "SELECT * FROM orders WHERE purchaseDate LIKE '%2019-08%'";
-              $result = mysqli_query($db, $sql);
-              echo "<span>".mysqli_num_rows($result)."</span>";
-             ?>
+              <?php echo "<span>".$data['totalOrders']."</span>" ?>
             </div>
             <div class="category">
               <span>Revenues</span>
-              <?php 
-              $db = mysqli_connect('localhost','root','','boozt');
-              $qry = "SELECT sum(price) as total FROM orderItems
-              JOIN orders on orders.orderId= orderItems.orderId
-              WHERE orders.purchaseDate LIKE '%2019-08%'";
-              $result = mysqli_query($db, $qry);
-              while ($row = mysqli_fetch_assoc($result))
-              {
-                echo "<span>".$row['total']."</span>";
-              }
-             ?>
+              <?php echo "<span>".$data['totalOrderItems']."</span>" ?>
             </div>
             <div class="category">
               <span>Customers</span>
-              <?php 
-              $db = mysqli_connect('localhost','root','','boozt');
-              $result = "SELECT * FROM customer
-              JOIN orders on orders.customerId = customer.customerId
-              WHERE orders.purchaseDate LIKE '%2019-08%'";
-              $query = mysqli_query($db, $result);
-              echo "<span>".mysqli_num_rows($query)."</span>";
-             ?>
+              <?php echo "<span>".$data['totalCustomers']."</span>" ?>
+              <?php echo ($data['totalOrderByDay']) ?>
           </div>
         </div>
       </div>
       <br>
       <br>
+      <div class="chart">
+      <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Day', 'Orders', 'Customers'],
+          ['Sep 1', , 400],
+          ['Sep 2', 2000, 460],
+          ['Sep 3', 660, 1120],
+          ['Sep 4', 1030, 540],
+          ['Sep 5', 2500, 400],
+          ['Sep 6', 3500, 460],
+          ['Sep 7', 660, 1120],
+
+        ]);
+
+        var options = {
+          title: 'Boozt Performance',
+          hAxis: {title: 'Month',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+     <div id="chart_div" style="width: 75%; margin:0 auto; height: 500px;background:none";></div>
+      </div>
 </div>
 
